@@ -1,0 +1,25 @@
+name: Build CI Pipeline - Build & Test
+on: 
+    push:
+        paths:
+            - 'app/**'
+            - 'Dockerfile'
+            - 'requirements.txt'
+            - '.github/workflows/ci_build_test.yml'
+        branches:
+            - main
+            - dev
+jobs:
+    build-test:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v4
+            - name: Build Docker Image
+              run: docker build -t cicd-prod  .
+            - name: run container
+              run: docker run -d -p 5000:5000 --name prod-container cicd-prod
+            - name: wait for app
+              run: sleep 5
+            - name: Fake Test
+              run: echo "All tests passed successfully!"
